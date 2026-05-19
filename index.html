@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lens Studio — Premium Camera Equipment</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@300;400;600;700;900&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand">
+        <span class="brand-icon">◉</span>
+        <span class="brand-name">LENS STUDIO</span>
+      </div>
+      <nav class="header-nav">
+        <a href="#products">ສິນຄ້າ</a>
+        <a href="#checkout">ຊຳລະເງິນ</a>
+      </nav>
+      <button class="cart-btn" onclick="toggleCart()" aria-label="Open cart">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        <span class="cart-count" id="cartCount">0</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-inner">
+      <p class="hero-tagline">ອຸປະກອນລະດັບມືອາຊີບ</p>
+      <h1 class="hero-title">ບັນທຶກທຸກ<br/><em>ຊ່ວງເວລາ</em></h1>
+      <p class="hero-sub">ກ້ອງ, ເລນ ແລະ ອຸປະກອນ Premium ສຳລັບ Content Creator ມືອາຊີບ.</p>
+      <a href="#products" class="hero-cta">ເລືອກຊື້ສິນຄ້າ <span>→</span></a>
+    </div>
+    <div class="hero-visual">
+      <div class="lens-ring r1"></div>
+      <div class="lens-ring r2"></div>
+      <div class="lens-ring r3"></div>
+      <div class="lens-center">◉</div>
+    </div>
+  </section>
+
+  <!-- CART SIDEBAR -->
+  <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+  <aside class="cart-sidebar" id="cartSidebar">
+    <div class="cart-header">
+      <h2>ກະຕ່າຊື້ເຄື່ອງ</h2>
+      <button class="close-cart" onclick="toggleCart()">✕</button>
+    </div>
+    <div class="cart-items" id="cartItems">
+      <p class="cart-empty">ກະຕ່າຊື້ເຄື່ອງຫວ່າງ</p>
+    </div>
+    <div class="cart-footer" id="cartFooter" style="display:none">
+      <div class="cart-total">
+        <span>ຍອດລວມ</span>
+        <span id="cartTotal">$0.00</span>
+      </div>
+      <a href="#checkout" class="btn-primary full-width" onclick="toggleCart()">ໄປຊຳລະເງິນ</a>
+    </div>
+  </aside>
+
+  <!-- PRODUCTS SECTION -->
+  <section class="products-section" id="products">
+    <div class="section-header">
+      <p class="section-label">ສິນຄ້າຂອງພວກເຮົາ</p>
+      <h2 class="section-title">ອຸປະກອນສະຕູດິໂອ</h2>
+    </div>
+    <!-- Category Filter -->
+    <div class="category-filter" id="categoryFilter">
+      <button class="filter-btn active" onclick="filterCategory('all', this)">
+        ທັງໝົດ <span class="filter-count" id="count-all">12</span>
+      </button>
+      <button class="filter-btn" onclick="filterCategory('camera', this)">
+        📷 ກ້ອງຖ່າຍຮູບ <span class="filter-count" id="count-camera">0</span>
+      </button>
+      <button class="filter-btn" onclick="filterCategory('lens', this)">
+        🔭 ເລນກ້ອງ <span class="filter-count" id="count-lens">0</span>
+      </button>
+      <button class="filter-btn" onclick="filterCategory('accessories', this)">
+        🎛 ອຸປະກອນເສີມ <span class="filter-count" id="count-accessories">0</span>
+      </button>
+    </div>
+    <div class="products-grid" id="productsGrid"></div>
+  </section>
+
+  <!-- CHECKOUT SECTION -->
+  <section class="checkout-section" id="checkout">
+    <div class="checkout-inner">
+      <div class="checkout-info">
+        <p class="section-label">ຊຳລະເງິນ</p>
+        <h2 class="section-title">ຢືນຢັນການສັ່ງຊື້</h2>
+        <div class="order-summary" id="orderSummary">
+          <p class="empty-order">ຍັງບໍ່ມີສິນຄ້າໃນກະຕ່າ</p>
+        </div>
+      </div>
+      <div class="checkout-form-wrap">
+        <div class="checkout-form">
+          <h3>ຂໍ້ມູນການຈັດສົ່ງ</h3>
+          <div class="form-group">
+            <label for="custName">ຊື່ ແລະ ນາມສະກຸນ</label>
+            <input type="text" id="custName" placeholder="" autocomplete="name"/>
+          </div>
+          <div class="form-group">
+            <label for="custPhone">ເບີໂທລະສັບ</label>
+            <input type="tel" id="custPhone" placeholder="020 XXXX XXXX" autocomplete="tel"/>
+          </div>
+          <div class="form-group">
+            <label for="custAddress">ທີ່ຢູ່ຈັດສົ່ງ</label>
+            <textarea id="custAddress" rows="3" placeholder="ບ້ານ, ເມືອງ, ແຂວງ" autocomplete="street-address"></textarea>
+          </div>
+          <div class="form-group coupon-group">
+            <label for="couponInput">ລະຫັດສ່ວນຫຼຸດ (Coupon Code)</label>
+            <div class="coupon-row">
+              <input type="text" id="couponInput" placeholder="XXXXX" style="text-transform:uppercase"/>
+              <button class="btn-coupon" onclick="applyCoupon()">ນຳໃຊ້</button>
+            </div>
+            <p class="coupon-msg" id="couponMsg"></p>
+          </div>
+
+          <!-- Shipping Options -->
+          <div class="shipping-section">
+            <h4>ບໍລິສັດຂົນສົ່ງ</h4>
+            <div class="shipping-options" id="shippingOptions">
+              <label class="shipping-option selected" onclick="selectShipping(this, 'ອານຸສິດ', 0)">
+                <input type="radio" name="shipping" value="ອານຸສິດ" checked/>
+                <div class="shipping-option-logo">🚚</div>
+                <div class="shipping-option-info">
+                  <p class="shipping-option-name">ອານຸສິດ</p>
+                  <p class="shipping-option-desc">ສົ່ງ 2–4 ວັນທຳການ</p>
+                </div>
+                <span class="shipping-option-price free">ຟຣີ</span>
+              </label>
+              <label class="shipping-option" onclick="selectShipping(this, 'ມີໄຊ', 15000)">
+                <input type="radio" name="shipping" value="ມີໄຊ"/>
+                <div class="shipping-option-logo">📦</div>
+                <div class="shipping-option-info">
+                  <p class="shipping-option-name">ມີໄຊ</p>
+                  <p class="shipping-option-desc">ສົ່ງ 1–2 ວັນທຳການ</p>
+                </div>
+                <span class="shipping-option-price">₭15,000</span>
+              </label>
+              <label class="shipping-option" onclick="selectShipping(this, 'ຮຸ່ງອາລຸນ', 20000)">
+                <input type="radio" name="shipping" value="ຮຸ່ງອາລຸນ"/>
+                <div class="shipping-option-logo">⚡</div>
+                <div class="shipping-option-info">
+                  <p class="shipping-option-name">ຮຸ່ງອາລຸນ</p>
+                  <p class="shipping-option-desc">ສົ່ງດ່ວນ ພາຍໃນ 24 ຊົ່ວໂມງ</p>
+                </div>
+                <span class="shipping-option-price">₭20,000</span>
+              </label>
+              <label class="shipping-option" onclick="selectShipping(this, 'Unitel', 25000)">
+                <input type="radio" name="shipping" value="Unitel"/>
+                <div class="shipping-option-logo">📡</div>
+                <div class="shipping-option-info">
+                  <p class="shipping-option-name">Unitel Express</p>
+                  <p class="shipping-option-desc">ສົ່ງດ່ວນພິເສດ + ຕິດຕາມສົດ</p>
+                </div>
+                <span class="shipping-option-price">₭25,000</span>
+              </label>
+            </div>
+          </div>
+          <button class="btn-primary full-width" onclick="confirmOrder()">
+            ຢືນຢັນການສັ່ງຊື້ <span>→</span>
+          </button>
+          <p class="secure-note">🔒 ລະບົບຊຳລະເງິນທີ່ປອດໄພ ແລະ ເຂົ້າລະຫັດ</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="brand">
+        <span class="brand-icon">◉</span>
+        <span class="brand-name">LENS STUDIO</span>
+      </div>
+      <p class="footer-copy">© 2025 Lens Studio. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

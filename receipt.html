@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Order Receipt — Lens Studio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@300;400;600;700;900&display=swap" rel="stylesheet"/>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@300;400;600;700;900&display=swap');
+
+    :root {
+      --black:   #0a0a0a;
+      --gray-900:#111111;
+      --gray-800:#1a1a1a;
+      --gray-700:#2a2a2a;
+      --gray-600:#3d3d3d;
+      --gray-500:#6b6b6b;
+      --gray-400:#999999;
+      --gray-300:#c4c4c4;
+      --gray-200:#e0e0e0;
+      --gray-100:#f4f4f4;
+      --white:   #ffffff;
+      --gold:    #c9a96e;
+      --font: 'Noto Sans Lao', sans-serif;
+      --radius: 4px;
+      --radius-lg: 8px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font);
+      background: var(--gray-900);
+      color: var(--white);
+      min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+      padding: 48px 24px;
+    }
+
+    /* ---- RECEIPT WRAPPER ---- */
+    .receipt-wrapper {
+      width: 100%; max-width: 680px;
+    }
+
+    /* ---- BACK LINK ---- */
+    .back-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      color: var(--gray-400); font-size: 0.8rem; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      text-decoration: none; margin-bottom: 32px;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--white); }
+
+    /* ---- RECEIPT CARD ---- */
+    .receipt-card {
+      background: var(--gray-800);
+      border: 1px solid var(--gray-700);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    /* Receipt Header */
+    .receipt-header {
+      background: var(--black);
+      padding: 36px 40px;
+      border-bottom: 1px solid var(--gray-700);
+      display: flex; align-items: flex-start; justify-content: space-between;
+      gap: 24px;
+    }
+    .brand {
+      display: flex; align-items: center; gap: 10px;
+      font-weight: 900; font-size: 1rem; letter-spacing: 0.18em;
+      color: var(--white);
+    }
+    .brand-icon { color: var(--gold); font-size: 1.2rem; }
+    .receipt-meta { text-align: right; }
+    .receipt-label {
+      font-size: 0.65rem; letter-spacing: 0.2em; font-weight: 700;
+      color: var(--gold); text-transform: uppercase; margin-bottom: 4px;
+    }
+    .receipt-id {
+      font-size: 1rem; font-weight: 900; color: var(--white); margin-bottom: 4px;
+    }
+    .receipt-date { font-size: 0.8rem; color: var(--gray-400); }
+
+    /* Success Banner */
+    .success-banner {
+      background: linear-gradient(135deg, #1a2a1a, #0d1f0d);
+      border-bottom: 1px solid #2a4a2a;
+      padding: 20px 40px;
+      display: flex; align-items: center; gap: 14px;
+    }
+    .success-icon {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: #2d5a2d; display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; flex-shrink: 0;
+    }
+    .success-text h3 { font-size: 0.9rem; font-weight: 800; color: #7ecf7e; margin-bottom: 2px; }
+    .success-text p { font-size: 0.78rem; color: #5a9a5a; }
+
+    /* Receipt Body */
+    .receipt-body { padding: 36px 40px; }
+
+    /* Customer Info */
+    .section-title {
+      font-size: 0.68rem; letter-spacing: 0.18em; font-weight: 700;
+      color: var(--gold); text-transform: uppercase; margin-bottom: 16px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .section-title::after {
+      content: ''; flex: 1; height: 1px; background: var(--gray-700);
+    }
+    .customer-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+      margin-bottom: 36px;
+    }
+    .info-field label {
+      display: block; font-size: 0.65rem; letter-spacing: 0.14em;
+      font-weight: 700; color: var(--gray-500); text-transform: uppercase; margin-bottom: 4px;
+    }
+    .info-field p {
+      font-size: 0.9rem; font-weight: 600; color: var(--white); line-height: 1.5;
+    }
+    .info-field.full { grid-column: 1 / -1; }
+
+    /* Items Table */
+    .items-table { width: 100%; border-collapse: collapse; margin-bottom: 0; }
+    .items-table thead tr {
+      border-bottom: 1px solid var(--gray-700);
+    }
+    .items-table th {
+      font-size: 0.65rem; letter-spacing: 0.14em; font-weight: 700;
+      color: var(--gray-500); text-transform: uppercase;
+      padding: 0 0 12px; text-align: left;
+    }
+    .items-table th:last-child { text-align: right; }
+    .items-table td {
+      padding: 14px 0; border-bottom: 1px solid var(--gray-800);
+      vertical-align: top;
+    }
+    .items-table td:last-child { text-align: right; font-weight: 700; }
+    .item-thumb {
+      width: 44px; height: 44px; border-radius: var(--radius);
+      object-fit: cover; background: var(--gray-700);
+    }
+    .item-name { font-size: 0.88rem; font-weight: 700; margin-bottom: 2px; }
+    .item-cat { font-size: 0.73rem; color: var(--gray-400); }
+    .item-qty { font-size: 0.8rem; color: var(--gray-400); }
+    .item-price { font-size: 0.95rem; color: var(--white); }
+
+    /* Total */
+    .receipt-total-section {
+      margin-top: 20px; padding-top: 20px;
+      border-top: 1px solid var(--gray-700);
+    }
+    .total-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 6px 0; font-size: 0.85rem; color: var(--gray-400);
+    }
+    .total-row.grand {
+      margin-top: 12px; padding-top: 16px;
+      border-top: 1px solid var(--gray-600);
+      font-size: 1rem; font-weight: 900; color: var(--white);
+    }
+    .total-row.grand span:last-child { color: var(--gold); font-size: 1.3rem; }
+    .disc-row { color: #7ecf7e !important; }
+    .disc-row span { color: #7ecf7e !important; }
+
+    /* Receipt Footer */
+    .receipt-footer {
+      background: var(--black);
+      border-top: 1px solid var(--gray-700);
+      padding: 24px 40px;
+      text-align: center;
+    }
+    .receipt-footer p { font-size: 0.78rem; color: var(--gray-500); line-height: 1.7; }
+    .receipt-footer strong { color: var(--gray-300); }
+
+    /* ---- ACTION BUTTONS ---- */
+    .action-buttons {
+      display: flex; gap: 12px; margin-top: 28px;
+    }
+    .btn-print {
+      background: var(--white); color: var(--black);
+      border: none; cursor: pointer;
+      padding: 14px 28px; font-size: 0.82rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      border-radius: var(--radius); flex: 1;
+      transition: background 0.2s; font-family: var(--font);
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-print:hover { background: var(--gray-200); }
+    .btn-back {
+      background: transparent; color: var(--white);
+      border: 1px solid var(--gray-600);
+      padding: 14px 24px; font-size: 0.82rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      border-radius: var(--radius); cursor: pointer;
+      transition: border-color 0.2s; font-family: var(--font);
+    }
+    .btn-back:hover { border-color: var(--white); }
+
+    /* ---- NO ORDER ---- */
+    .no-order {
+      text-align: center; padding: 80px 24px; color: var(--gray-400);
+    }
+    .no-order h2 { font-size: 1.4rem; margin-bottom: 12px; color: var(--white); }
+    .no-order p { margin-bottom: 28px; }
+
+    /* ---- RESPONSIVE ---- */
+    @media (max-width: 600px) {
+      body { padding: 24px 16px; }
+      .receipt-header { padding: 24px 24px; flex-direction: column; }
+      .receipt-meta { text-align: left; }
+      .receipt-body { padding: 24px 24px; }
+      .customer-grid { grid-template-columns: 1fr; }
+      .receipt-footer { padding: 20px 24px; }
+      .success-banner { padding: 16px 24px; }
+      .action-buttons { flex-direction: column; }
+    }
+
+    /* ---- PRINT STYLES ---- */
+    @media print {
+      body {
+        background: #fff !important; color: #000 !important;
+        padding: 0 !important;
+      }
+      .back-link, .action-buttons { display: none !important; }
+      .receipt-card {
+        border: 1px solid #ccc !important;
+        box-shadow: none !important; border-radius: 0 !important;
+      }
+      .receipt-header { background: #f8f8f8 !important; }
+      .receipt-body { padding: 24px !important; }
+      .success-banner { background: #f0fff0 !important; border-color: #ccc !important; }
+      .success-text h3 { color: #2d6a2d !important; }
+      .success-text p { color: #4a8a4a !important; }
+      .brand-icon, .section-title { color: #c9a96e !important; }
+      .receipt-card, .receipt-header, .receipt-body,
+      .receipt-footer, .success-banner { background: #fff !important; color: #000 !important; }
+      .section-title::after { background: #ccc !important; }
+      .receipt-date, .info-field label, .item-cat, .item-qty,
+      .total-row, .receipt-footer p { color: #666 !important; }
+      .items-table thead tr, .items-table td,
+      .receipt-total-section, .total-row.grand { border-color: #ddd !important; }
+      .total-row.grand span:last-child { color: #8a6020 !important; }
+    .disc-row { color: #2d6a2d !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="receipt-wrapper" id="app">
+    <!-- Loaded by JS -->
+  </div>
+
+  <script>
+    (function() {
+      const raw = localStorage.getItem('lensStudioOrder');
+      const app = document.getElementById('app');
+
+      if (!raw) {
+        app.innerHTML = `
+          <div class="no-order">
+            <h2>ບໍ່ພົບຂໍ້ມູນການສັ່ງຊື້</h2>
+            <p>ທ່ານຍັງບໍ່ໄດ້ສັ່ງຊື້ສິນຄ້າ ກະລຸນາກັບໄປຮ້ານ.</p>
+            <button class="btn-print" onclick="window.location.href='index.html'" style="display:inline-flex;max-width:240px;margin:0 auto;">
+              ← ກັບໄປໜ້າຮ້ານ
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      const order = JSON.parse(raw);
+      const { customer, items, subtotal, discountPercent, appliedCoupon, total, shipping, date, orderId } = order;
+
+      const shippingRow = shipping
+        ? `<div class="total-row">
+            <span>ຄ່າຈັດສົ່ງ (${shipping.name})</span>
+            <span>${shipping.price === 0 ? '<span style="color:#7ecf7e">ຟຣີ</span>' : '₭' + shipping.price.toLocaleString()}</span>
+          </div>`
+        : `<div class="total-row"><span>ຄ່າຈັດສົ່ງ</span><span>ຟຣີ</span></div>`;
+      const tax = total * 0.08;
+      const grandTotal = total + tax;
+
+      const itemsHTML = items.map(item => `
+        <tr>
+          <td>
+            <img class="item-thumb" src="${item.image}" alt="${item.name}"/>
+          </td>
+          <td>
+            <p class="item-name">${item.name}</p>
+            <p class="item-cat">${item.category}</p>
+          </td>
+          <td class="item-qty">× ${item.qty}</td>
+          <td class="item-price">$${(item.price * item.qty).toLocaleString()}</td>
+        </tr>
+      `).join('');
+
+      const discRow = discountPercent > 0 ? `
+        <div class="total-row disc-row">
+          <span>ສ່ວນຫຼຸດ ${discountPercent}% (${appliedCoupon})</span>
+          <span>-$${(subtotal * discountPercent / 100).toFixed(2)}</span>
+        </div>
+      ` : '';
+
+      app.innerHTML = `
+        <a class="back-link" href="index.html">← ກັບໄປໜ້າຮ້ານ</a>
+
+        <div class="receipt-card" id="receiptCard">
+          <div class="receipt-header">
+            <div class="brand">
+              <span class="brand-icon">◉</span>
+              <span>LENS STUDIO</span>
+            </div>
+            <div class="receipt-meta">
+              <p class="receipt-label">ໃບບິນຮັບເງິນ</p>
+              <p class="receipt-id">${orderId}</p>
+              <p class="receipt-date">${date}</p>
+            </div>
+          </div>
+
+          <div class="success-banner">
+            <div class="success-icon">✓</div>
+            <div class="success-text">
+              <h3>ການສັ່ງຊື້ສຳເລັດ!</h3>
+              <p>ຂອບໃຈທ່ານທີ່ໃຊ້ບໍລິການ Lens Studio. ສິນຄ້າຂອງທ່ານກຳລັງຖືກກຽມ.</p>
+            </div>
+          </div>
+
+          <div class="receipt-body">
+            <p class="section-title">ຂໍ້ມູນລູກຄ້າ</p>
+            <div class="customer-grid">
+              <div class="info-field">
+                <label>ຊື່ ແລະ ນາມສະກຸນ</label>
+                <p>${customer.name}</p>
+              </div>
+              <div class="info-field">
+                <label>ເບີໂທລະສັບ</label>
+                <p>${customer.phone}</p>
+              </div>
+              <div class="info-field full">
+                <label>ທີ່ຢູ່ຈັດສົ່ງ</label>
+                <p>${customer.address}</p>
+              </div>
+            </div>
+
+            <p class="section-title">ລາຍການສິນຄ້າ</p>
+            <table class="items-table">
+              <thead>
+                <tr>
+                  <th style="width:52px"></th>
+                  <th>ສິນຄ້າ</th>
+                  <th>ຈຳນວນ</th>
+                  <th>ລາຄາ</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${itemsHTML}
+              </tbody>
+            </table>
+
+            <div class="receipt-total-section">
+              <div class="total-row">
+                <span>ລາຄາລວມ (ກ່ອນຫຼຸດ)</span>
+                <span>$${subtotal.toLocaleString()}</span>
+              </div>
+              ${discRow}
+              <div class="total-row">
+                <span>ພາສີມູນຄ່າເພີ່ມ (8%)</span>
+                <span>$${tax.toFixed(2)}</span>
+              </div>
+              ${shippingRow}
+              <div class="total-row grand">
+                <span>ຍອດລວມທັງໝົດ</span>
+                <span>$${grandTotal.toFixed(2)}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="receipt-footer">
+            <p>
+              <strong>ຂອບໃຈທີ່ໃຊ້ບໍລິການ Lens Studio.</strong><br/>
+              ສອບຖາມຂໍ້ມູນ: support@lensstudio.com ຫຼື ໂທ 020-5555-0199<br/>
+              ກະລຸນາເກັບໃບບິນນີ້ໄວ້ສຳລັບການອ້າງອີງ.
+            </p>
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <button class="btn-print" onclick="window.print()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+            ພິມໃບບິນ / ບັນທຶກ PDF
+          </button>
+          <button class="btn-back" onclick="window.location.href='index.html'">
+            ← ສັ່ງຊື້ໃໝ່
+          </button>
+        </div>
+      `;
+    })();
+  </script>
+</body>
+</html>
